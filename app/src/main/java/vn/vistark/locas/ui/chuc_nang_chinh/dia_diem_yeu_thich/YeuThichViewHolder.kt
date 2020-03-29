@@ -46,7 +46,7 @@ class YeuThichViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             lnItemPlaceRoot.setOnClickListener {
                 if (DiaDiemYeuThichFragment.googleMap != null) {
                     val latLng = LatLng(coordinates.lat, coordinates.lng)
-                    val camUp = CameraUpdateFactory.newLatLngZoom(latLng, 14F)
+                    val camUp = CameraUpdateFactory.newLatLngZoom(latLng, 24F)
                     DiaDiemYeuThichFragment.googleMap!!.animateCamera(camUp)
                 }
             }
