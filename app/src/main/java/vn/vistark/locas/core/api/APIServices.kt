@@ -1,12 +1,12 @@
 package vn.vistark.locas.core.api
 
 import DanhMucViTriResponse
+import FavoritePlacesResponse
 import GeocodingResponse
-import com.google.gson.JsonObject
+import PlaceFromWardResponse
 import retrofit2.Call
 import retrofit2.http.*
-import vn.vistark.locas.core.request_model.CoodinateRequest
-import vn.vistark.locas.core.request_model.Coodinates
+import vn.vistark.locas.core.request_model.coordinate.CoodinateRequest
 import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.response_model.login.LoginResponse
 
@@ -40,6 +40,13 @@ public interface APIServices {
 
     @POST("/api")
     fun getLocationTypeCode()
+
+    @POST("/api/places/getplacesfromward")
+    @FormUrlEncoded
+    fun getPlacesFromward(@Field("ward") ward: String): Call<PlaceFromWardResponse>
+
+    @GET("/api/users/getfavoriteplacesfromuser")
+    fun getFavoritePlaceFromUser(): Call<FavoritePlacesResponse>
 
     @GET("https://maps.google.com/maps/api/geocode/json?sensor=true&key=AIzaSyDksc5_jxcH_rWobg-K3bI863_SB2q4wWI")
     fun getLocationDetails(@Query("latlng") latlng: String): Call<GeocodingResponse>

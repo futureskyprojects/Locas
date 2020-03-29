@@ -13,21 +13,21 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.LabelVisibilityMode.LABEL_VISIBILITY_SELECTED
-import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import vn.vistark.locas.R
 import vn.vistark.locas.core.api.APIUtils
-import vn.vistark.locas.core.request_model.CoodinateRequest
-import vn.vistark.locas.core.request_model.Coodinates
+import vn.vistark.locas.core.request_model.coordinate.CoodinateRequest
+import vn.vistark.locas.core.request_model.coordinate.Coodinates
 import vn.vistark.locas.core.response_model.check.CheckResponse
+import vn.vistark.locas.core.utils.CoordinatesDecoder
 import vn.vistark.locas.core.utils.SimpfyLocationUtils
 import vn.vistark.locas.core.utils.SimpleNotify
 import vn.vistark.locas.ui.chuc_nang_chinh.danh_muc_dia_diem.DanhMucDiaDiemFragment
+import vn.vistark.locas.ui.chuc_nang_chinh.dia_diem_yeu_thich.DiaDiemYeuThichFragment
 
 
 class ManHinhMenu : AppCompatActivity() {
@@ -60,6 +60,7 @@ class ManHinhMenu : AppCompatActivity() {
                 override fun onLocationChanged(location: Location?) {
                     Log.w("Vị trí", "${location?.latitude} ${location?.longitude}")
                     if (location != null) {
+                        SimpfyLocationUtils.mLastLocation = location
                         APIUtils.mAPIServices?.updateLastCoodinates(
                             CoodinateRequest(
                                 Coodinates(
@@ -116,6 +117,10 @@ class ManHinhMenu : AppCompatActivity() {
                 when (it.itemId) {
                     R.id.navigation_danh_muc_dia_diem -> {
                         loadFragment(DanhMucDiaDiemFragment())
+                        return@setOnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_dia_diem_yeu_thich -> {
+                        loadFragment(DiaDiemYeuThichFragment())
                         return@setOnNavigationItemSelectedListener true
                     }
                     else -> {

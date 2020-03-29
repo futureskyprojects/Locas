@@ -62,9 +62,10 @@ class ManHinhDangNhap : AppCompatActivity() {
             override fun run() {
                 if (SimpfyLocationUtils.mLastLocation != null) {
                     if (Constants.token.isNotEmpty()) {
-                        goToMenuScreen()
+                        runOnUiThread {
+                            btnDangNhap.performClick()
+                        }
                     }
-                    loading.dismiss()
                     this.cancel()
                 }
             }
@@ -77,9 +78,17 @@ class ManHinhDangNhap : AppCompatActivity() {
             finish()
         }
         btnDangNhap.setOnClickListener {
-            loading.show()
             val username = edtUsername.text.toString()
             val password = edtPassword.text.toString()
+            if (username.length < 5) {
+                SimpleNotify.error(this, "Tài khoản không hợp lệ", "")
+                return@setOnClickListener
+            } else if (password.length < 8) {
+                SimpleNotify.error(this, "Mật khẩu không hợp lệ", "")
+                return@setOnClickListener
+            }
+
+            loading.show()
             val md5Pass = Crypto.md5(password)
             if (md5Pass.isNotEmpty()) {
                 APIUtils.mAPIServices?.login(username, md5Pass)
@@ -96,6 +105,9 @@ class ManHinhDangNhap : AppCompatActivity() {
                             if (response.isSuccessful) {
                                 val login = response.body()
                                 if (login != null && login.code == 1) {
+                                    Constants.username = edtUsername.text.toString()
+                                    Constants.password = edtPassword.text.toString()
+
                                     Constants.token = login.token
                                     Constants.avatar = login.avatar ?: ""
                                     APIUtils.replaceAPIServices()
