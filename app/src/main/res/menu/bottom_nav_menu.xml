@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_danh_muc_dia_diem"
+        android:icon="@drawable/ic_road"
+        android:title="Danh mục" />
+
+    <item
+        android:id="@+id/navigation_dia_diem_yeu_thich"
+        android:icon="@drawable/ic_love_location"
+        android:title="Yêu thích" />
+
+    <item
+        android:id="@+id/navigation_thiet_lap"
+        android:icon="@drawable/ic_setting_gps"
+        android:title="Thiết lập" />
+
+</menu>
