@@ -206,6 +206,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:gravity="center"
                             android:hint="Giờ mở cửa"
                             android:inputType="textEmailAddress" />
                     </LinearLayout>
@@ -242,6 +245,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:gravity="center"
                             android:hint="Giờ đóng cửa"
                             android:inputType="textEmailAddress" />
                     </LinearLayout>

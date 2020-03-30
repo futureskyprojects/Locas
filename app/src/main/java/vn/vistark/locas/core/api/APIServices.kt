@@ -55,7 +55,7 @@ public interface APIServices {
     @GET("/api/users/getfavoriteplacesfromuser")
     fun getFavoritePlaceFromUser(): Call<FavoritePlacesResponse>
 
-    @GET("https://maps.google.com/maps/api/geocode/json?sensor=true&key=AIzaSyDksc5_jxcH_rWobg-K3bI863_SB2q4wWI")
+    @GET("https://maps.google.com/maps/api/geocode/json?sensor=true&key=AIzaSyDksc5_jxcH_rWobg-K3bI863_SB2q4wWI&language=vi")
     fun getLocationDetails(@Query("latlng") latlng: String): Call<GeocodingResponse>
 
     @POST("/api/places/getallfromdetail")

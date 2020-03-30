@@ -7,17 +7,26 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.FileUtils
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.webkit.MimeTypeMap
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.google.gson.GsonBuilder
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.layout_danh_gia.*
 import okhttp3.MediaType
@@ -31,12 +40,14 @@ import vn.vistark.locas.core.api.APIUtils
 import vn.vistark.locas.core.request_model.coordinate.Coodinates
 import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.utils.LoadingDialog
+import vn.vistark.locas.core.utils.SaveFileUtils
 import vn.vistark.locas.core.utils.SimpfyLocationUtils
 import vn.vistark.locas.core.utils.SimpleNotify
 import vn.vistark.locas.ui.chuc_nang_chinh.danh_muc_dia_diem.DanhMucAdapter
 import vn.vistark.locas.ui.trashing.TempActivityForSelectFile
 import java.io.File
 import java.lang.Exception
+import java.net.URI
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,23 +58,53 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
     companion object {
         var selectedFp: DanhMuc? = null
         var imageUri: Uri? = null
+        var bm1: Bitmap? = null
         var logoUri: Uri? = null
+        var bm2: Bitmap? = null
 
         var current: ThemDiaDiemDialog? = null
 
         fun imageUriUpdate(uri: Uri?) {
             imageUri = uri
             if (current != null) {
-                Glide.with(current!!.ivHinhAnhDiaDiem).load(imageUri)
-                    .into(current!!.ivHinhAnhDiaDiem)
+                Glide.with(current!!.ivHinhAnhDiaDiem)
+                    .asBitmap()
+                    .load(imageUri)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            current!!.ivHinhAnhDiaDiem.setImageBitmap(resource)
+                            bm1 = resource
+                        }
+                    })
             }
         }
 
         fun logoUriUpdate(uri: Uri?) {
             logoUri = uri
             if (current != null) {
-                Glide.with(current!!.ivLogoHinhAnh).load(logoUri)
-                    .into(current!!.ivLogoHinhAnh)
+                Glide
+                    .with(current!!.ivLogoHinhAnh)
+                    .asBitmap()
+                    .load(logoUri)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) {
+
+                        }
+
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            current!!.ivLogoHinhAnh.setImageBitmap(resource)
+                            bm2 = resource
+                        }
+                    })
             }
         }
     }
@@ -198,7 +239,7 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
             TimePickerDialog(
                 context,
                 TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                    val pickedDate = String.format("%02d-%02d", hourOfDay, minute)
+                    val pickedDate = String.format("%02d:%02d", hourOfDay, minute)
                     edtGioMoCua.setText(pickedDate)
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
@@ -213,7 +254,7 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
             TimePickerDialog(
                 context,
                 TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                    val pickedDate = String.format("%02d-%02d", hourOfDay, minute)
+                    val pickedDate = String.format("%02d:%02d", hourOfDay, minute)
                     edtGioDongCua.setText(pickedDate)
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
@@ -224,6 +265,10 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
         btnThemDiaDiem.setOnClickListener {
             if (imageUri == null) {
                 SimpleNotify.error(context, "Chưa chọn ảnh cho địa điểm", "")
+                return@setOnClickListener
+            }
+            if (logoUri == null) {
+                SimpleNotify.error(context, "Chưa chọn logo cho địa điểm", "")
                 return@setOnClickListener
             }
             val ten = edtPlaceName.text.toString()
@@ -267,17 +312,36 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                 return@setOnClickListener
             }
 
-            val imgFile = File(imageUri!!.path!!)
+            Log.w("PATH", imageUri!!.path!!)
+            Log.w("PATH", imageUri!!.path!!)
+
+            Log.w(
+                "PAASDSADASDSATH", MimeTypeMap.getSingleton()
+                    .getExtensionFromMimeType(context.contentResolver.getType(imageUri!!))
+            )
+            val imgFile = SaveFileUtils.saveImages(
+                context,
+                "img_place.${MimeTypeMap.getSingleton()
+                    .getExtensionFromMimeType(context.contentResolver.getType(imageUri!!)!!)}",
+                bm1!!
+            )
+            Log.w("PATH", imgFile!!.path)
             val imgReqBody = RequestBody.create(
-                MediaType.parse(context.contentResolver.getType(imageUri!!)!!),
+                MediaType.parse("application/octet-stream"),
                 imgFile
             )
 
-            val logoFile = File(logoUri!!.path!!)
-            val logoReqBody = RequestBody.create(
-                MediaType.parse(context.contentResolver.getType(imageUri!!)!!),
-                imgFile
+            val logoFile = SaveFileUtils.saveImages(
+                context,
+                "logo_place.${MimeTypeMap.getSingleton()
+                    .getExtensionFromMimeType(context.contentResolver.getType(logoUri!!)!!)}",
+                bm2!!
             )
+            val logoReqBody = RequestBody.create(
+                MediaType.parse("application/octet-stream"),
+                logoFile!!
+            )
+            Log.w("PATH", logoFile.path)
             loadingDialog.show()
             try {
                 APIUtils.mAPIServices?.addNewPlace(
@@ -290,10 +354,11 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                     selectedFp!!.ma_dm,
                     diaChi,
                     luocSuHinhThanh,
-                    MultipartBody.Part.createFormData("hinh_anh", imgFile.name, imgReqBody),
+                    MultipartBody.Part.createFormData("hinh_anh", imgFile.path, imgReqBody),
                     MultipartBody.Part.createFormData("logo", logoFile.name, logoReqBody)
                 )?.enqueue(object : Callback<CheckResponse> {
                     override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
+                        t.printStackTrace()
                         SimpleNotify.networkError(context)
                         loadingDialog.dismiss()
                     }
@@ -312,13 +377,15 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                                         context,
                                         "Thêm địa điểm thành công",
                                         Toast.LENGTH_SHORT
-                                    )
+                                    ).show()
                                     this@ThemDiaDiemDialog.dismiss()
                                 } else {
                                     SimpleNotify.error(context, checkResponse.message, "LỖI")
                                 }
                             }
                         } else {
+                            Log.w("AAA", response.code().toString())
+                            Log.w("AAA", GsonBuilder().create().toJson(response.errorBody()))
                             SimpleNotify.undefinedError(context)
                         }
                         loadingDialog.dismiss()
@@ -332,5 +399,4 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
 
         }
     }
-
 }

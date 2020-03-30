@@ -10,6 +10,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.util.Log
 import android.widget.TextView
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,7 +40,7 @@ class CoordinatesDecoder {
                     if (response.isSuccessful) {
                         val geocodingResponse = response.body()
                         if (geocodingResponse != null && geocodingResponse.status.contains("OK") && geocodingResponse.results.isNotEmpty()) {
-                            locationToCode(geocodingResponse.results[2])
+                            locationToCode(geocodingResponse.results[4])
                             textView.text = geocodingResponse.results[4].formatted_address.replace(
                                 "Unnamed Road, ",
                                 ""
@@ -56,6 +57,7 @@ class CoordinatesDecoder {
         }
 
         fun locationToCode(results: Results) {
+            Log.w("ZAFDFF >>", GsonBuilder().create().toJson(results))
             APIUtils.mAPIServices?.convertLocationToCode(results)
                 ?.enqueue(object : Callback<LocationToCodeResponse> {
                     override fun onFailure(call: Call<LocationToCodeResponse>, t: Throwable) {
