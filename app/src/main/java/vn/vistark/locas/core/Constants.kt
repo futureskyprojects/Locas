@@ -6,21 +6,85 @@ import androidx.appcompat.app.AppCompatActivity
 
 class Constants {
     companion object {
+        private val rangeKey = "RANGE_KEY"
         private val keyToken = "USER_TOKEN"
         private val keyUsername = "USERNAME"
         private val keyPassword = "Password"
         private val keyAvatar = "AVATAR"
         private val keySurename = "SURNAME"
         private val keyName = "NAME"
+        private val keyEmail = "EMAIL"
+        private val keyPhone = "PHONE_NUMBER"
+        private val keyBirthday = "BIRTH_DAY"
+        private var keyIsUseAssistant = "IS_USE_ASSISTANT"
 
         var sharedPreferences: SharedPreferences? = null
+
+        var range: Float
+            get() {
+                if (sharedPreferences != null) {
+                    return sharedPreferences!!.getFloat(rangeKey, 10000F)
+                } else {
+                    return 10000F
+                }
+            }
+            set(value) {
+                sharedPreferences?.edit()?.putFloat(rangeKey, value)?.apply()
+            }
+        var birthDay: String
+            get() {
+                if (sharedPreferences != null) {
+                    return sharedPreferences!!.getString(keyBirthday, "") ?: ""
+                } else {
+                    return ""
+                }
+            }
+            set(token) {
+                sharedPreferences?.edit()?.putString(keyBirthday, token)?.apply()
+            }
+
+        var phone: String
+            get() {
+                if (sharedPreferences != null) {
+                    return sharedPreferences!!.getString(keyPhone, "") ?: ""
+                } else {
+                    return ""
+                }
+            }
+            set(token) {
+                sharedPreferences?.edit()?.putString(keyPhone, token)?.apply()
+            }
+
+        var email: String
+            get() {
+                if (sharedPreferences != null) {
+                    return sharedPreferences!!.getString(keyEmail, "") ?: ""
+                } else {
+                    return ""
+                }
+            }
+            set(token) {
+                sharedPreferences?.edit()?.putString(keyEmail, token)?.apply()
+            }
+
+        var isUseAssistant: Boolean
+            get() {
+                if (sharedPreferences != null) {
+                    return sharedPreferences!!.getBoolean(keyIsUseAssistant, true)
+                } else {
+                    return true
+                }
+            }
+            set(value) {
+                sharedPreferences?.edit()?.putBoolean(keyIsUseAssistant, value)?.apply()
+            }
 
         fun getDisplayName(): String {
             if (name.isEmpty()) {
                 return username
             } else {
-                if (username.isNotEmpty()) {
-                    return "$username $name"
+                if (surname.isNotEmpty()) {
+                    return "$surname $name"
                 } else {
                     return name
                 }

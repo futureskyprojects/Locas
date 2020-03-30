@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:enterFadeDuration="@integer/default_animation_duration" android:exitFadeDuration="@integer/default_animation_duration">
     <item android:state_pressed="false">
         <shape>
             <gradient android:angle="45" android:endColor="#E2E2E2" android:startColor="#C9D6FF" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#80E2E2E2" />
         </shape>
     </item>
 </selector>

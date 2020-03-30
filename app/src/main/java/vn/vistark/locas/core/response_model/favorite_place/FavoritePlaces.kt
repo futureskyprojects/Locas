@@ -1,4 +1,5 @@
 import com.google.gson.annotations.SerializedName
+import vn.vistark.locas.core.request_model.coordinate.Coodinates
 
 data class FavoritePlaces(
     @SerializedName("ma_yt") val ma_yt: Int,
@@ -8,7 +9,7 @@ data class FavoritePlaces(
     @SerializedName("ma_dd") val ma_dd: Int,
     @SerializedName("ten_dd") val ten_dd: String,
     @SerializedName("mo_ta") val mo_ta: String,
-    @SerializedName("toa_do") val toa_do: String,
+    @SerializedName("toa_do") val toa_do: Coodinates,
     @SerializedName("logo") val logo: String,
     @SerializedName("gio_mo_cua") val gio_mo_cua: String,
     @SerializedName("gio_dong_cua") val gio_dong_cua: String,
@@ -18,5 +19,7 @@ data class FavoritePlaces(
     @SerializedName("hinh_anh") val hinh_anh: String,
     @SerializedName("ma_dm") val ma_dm: Int,
     @SerializedName("trang_thai") val trang_thai: Int,
-    @SerializedName("dia_chi") val dia_chi: String
+    @SerializedName("dia_chi") val dia_chi: String,
+    @SerializedName("rating") val rating: Float,
+    @SerializedName("count") val count: Int
 )

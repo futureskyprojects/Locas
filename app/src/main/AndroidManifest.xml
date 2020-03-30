@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -20,18 +20,20 @@
         android:theme="@style/LocasTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
+        <activity android:name=".ui.trashing.TempActivityForSelectFile"></activity>
+        <activity
+            android:name=".ui.dia_diem_quanh_day.ActivityManHinhDiaDiemQuanhDay"
+            android:theme="@style/LocasTheme.NoActionBar.Status" />
+
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-<!--        <meta-data-->
-<!--            android:name="com.google.android.maps.v2.API_KEY"-->
-<!--            android:value="@string/google_maps_key" />-->
+            android:value="@integer/google_play_services_version" /> <!-- <meta-data -->
+        <!-- android:name="com.google.android.maps.v2.API_KEY" -->
+        <!-- android:value="@string/google_maps_key" /> -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".ui.cap_nhat_ho_so.ManHinhCapNhatHoSo"></activity>
         <activity
             android:name=".ui.chuc_nang_chinh.ManHinhMenu"
             android:label="@string/title_activity_man_hinh_menu"

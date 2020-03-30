@@ -101,6 +101,7 @@ class DiaDiemYeuThichFragment : Fragment() {
         APIUtils.mAPIServices?.getFavoritePlaceFromUser()?.enqueue(object :
             Callback<FavoritePlacesResponse> {
             override fun onFailure(call: retrofit2.Call<FavoritePlacesResponse>, t: Throwable) {
+                t.printStackTrace()
                 SimpleNotify.networkError(this@DiaDiemYeuThichFragment.context!!)
                 loading.dismiss()
             }
@@ -115,8 +116,9 @@ class DiaDiemYeuThichFragment : Fragment() {
                         for (fp in fps.places) {
                             favoritePlaces.add((fp))
                             try {
-                                val coordinates = GsonBuilder().create()
-                                    .fromJson<Coodinates>(fp.toa_do, Coodinates::class.java)
+                                val coordinates = fp.toa_do
+//                                val coordinates = GsonBuilder().create()
+//                                    .fromJson<Coodinates>(fp.toa_do, Coodinates::class.java)
                                 val makerOptions = MarkerOptions()
                                 val latLng = LatLng(coordinates.lat, coordinates.lng)
                                 makerOptions.position(latLng)

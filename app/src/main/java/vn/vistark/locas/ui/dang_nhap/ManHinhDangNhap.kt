@@ -65,6 +65,8 @@ class ManHinhDangNhap : AppCompatActivity() {
                         runOnUiThread {
                             btnDangNhap.performClick()
                         }
+                    } else {
+                        loading.dismiss()
                     }
                     this.cancel()
                 }
@@ -143,9 +145,14 @@ class ManHinhDangNhap : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
 
@@ -153,7 +160,8 @@ class ManHinhDangNhap : AppCompatActivity() {
                 this,
                 arrayOf(
                     Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
                 ),
                 1234
             )
@@ -169,7 +177,10 @@ class ManHinhDangNhap : AppCompatActivity() {
     ) {
         when (requestCode) {
             1234 -> {
-                if (grantResults.size >= 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.size >= 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[2] == PackageManager.PERMISSION_GRANTED
+                ) {
                     initLocation()
                 } else {
                     permissionRequest()

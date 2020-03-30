@@ -2,12 +2,14 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android" android:enterFadeDuration="@integer/default_animation_duration" android:exitFadeDuration="@integer/default_animation_duration">
     <item android:state_pressed="false">
         <shape>
-            <gradient android:endColor="#CFDEF3" android:startColor="#E0EAFC" />
+            <gradient android:endColor="#38ef7d" android:startColor="#11998e" />
+            <corners android:radius="50dp" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="#E0EAFC" />
+            <solid android:color="#8038ef7d" />
+            <corners android:radius="50dp" />
         </shape>
     </item>
 </selector>

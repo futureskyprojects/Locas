@@ -28,9 +28,11 @@ import vn.vistark.locas.core.utils.SimpfyLocationUtils
 import vn.vistark.locas.core.utils.SimpleNotify
 import vn.vistark.locas.ui.chuc_nang_chinh.danh_muc_dia_diem.DanhMucDiaDiemFragment
 import vn.vistark.locas.ui.chuc_nang_chinh.dia_diem_yeu_thich.DiaDiemYeuThichFragment
+import vn.vistark.locas.ui.chuc_nang_chinh.thiet_lap.ManHinhThietLapFragment
 
 
 class ManHinhMenu : AppCompatActivity() {
+
     var locationManager: LocationManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,50 +58,7 @@ class ManHinhMenu : AppCompatActivity() {
             LocationManager.GPS_PROVIDER,
             10000L,
             0f,
-            object : LocationListener {
-                override fun onLocationChanged(location: Location?) {
-                    Log.w("Vị trí", "${location?.latitude} ${location?.longitude}")
-                    if (location != null) {
-                        SimpfyLocationUtils.mLastLocation = location
-                        APIUtils.mAPIServices?.updateLastCoodinates(
-                            CoodinateRequest(
-                                Coodinates(
-                                    location.latitude,
-                                    location.longitude
-                                )
-                            )
-                        )?.enqueue(object : Callback<CheckResponse> {
-                            override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
-                                Log.e("Lỗi", "Cập nhật vị trí lỗi")
-                            }
-
-                            override fun onResponse(
-                                call: Call<CheckResponse>,
-                                response: Response<CheckResponse>
-                            ) {
-                                if (response.isSuccessful) {
-                                    Log.w("Vị trí", "Cập nhật vị trí thành công")
-                                } else {
-                                    Log.e(
-                                        "Lỗi",
-                                        "Cập nhật vị trí chưa được " + response.body()?.message
-                                    )
-                                }
-                            }
-                        })
-                    }
-                }
-
-                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-                }
-
-                override fun onProviderEnabled(provider: String?) {
-                }
-
-                override fun onProviderDisabled(provider: String?) {
-                    SimpleNotify.error(this@ManHinhMenu, "Vui lòng bật GPS", "")
-                }
-            }
+            listener
         )
     }
 
@@ -123,6 +82,10 @@ class ManHinhMenu : AppCompatActivity() {
                         loadFragment(DiaDiemYeuThichFragment())
                         return@setOnNavigationItemSelectedListener true
                     }
+                    R.id.navigation_thiet_lap -> {
+                        loadFragment(ManHinhThietLapFragment())
+                        return@setOnNavigationItemSelectedListener true
+                    }
                     else -> {
                         return@setOnNavigationItemSelectedListener true
                     }
@@ -133,9 +96,59 @@ class ManHinhMenu : AppCompatActivity() {
         }
     }
 
+    val listener = object : LocationListener {
+        override fun onLocationChanged(location: Location?) {
+            Log.w("Vị trí", "${location?.latitude} ${location?.longitude}")
+            if (location != null) {
+                SimpfyLocationUtils.mLastLocation = location
+                APIUtils.mAPIServices?.updateLastCoodinates(
+                    CoodinateRequest(
+                        Coodinates(
+                            location.latitude,
+                            location.longitude
+                        )
+                    )
+                )?.enqueue(object : Callback<CheckResponse> {
+                    override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
+                        Log.e("Lỗi", "Cập nhật vị trí lỗi")
+                    }
+
+                    override fun onResponse(
+                        call: Call<CheckResponse>,
+                        response: Response<CheckResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            Log.w("Vị trí", "Cập nhật vị trí thành công")
+                        } else {
+                            Log.e(
+                                "Lỗi",
+                                "Cập nhật vị trí chưa được " + response.body()?.message
+                            )
+                        }
+                    }
+                })
+            }
+        }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        }
+
+        override fun onProviderEnabled(provider: String?) {
+        }
+
+        override fun onProviderDisabled(provider: String?) {
+            SimpleNotify.error(this@ManHinhMenu, "Vui lòng bật GPS", "")
+        }
+    }
+
     private fun loadFragment(fragment: Fragment) {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame_main, fragment)
         transaction.commit()
+    }
+
+    override fun onDestroy() {
+        locationManager?.removeUpdates(listener)
+        super.onDestroy()
     }
 }

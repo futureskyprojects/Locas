@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import vn.vistark.locas.R
 
 class DanhMucAdapter(val danhMucs: ArrayList<DanhMuc>) : RecyclerView.Adapter<DanhMucViewHolder>() {
+
+    var onClick: ((DanhMuc) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DanhMucViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_danh_muc, parent, false)
         return DanhMucViewHolder(v)
@@ -19,6 +22,9 @@ class DanhMucAdapter(val danhMucs: ArrayList<DanhMuc>) : RecyclerView.Adapter<Da
     override fun onBindViewHolder(holder: DanhMucViewHolder, position: Int) {
         val danhMuc = danhMucs[position]
         holder.bind(danhMuc)
+        holder.idmRlRoot.setOnClickListener {
+            onClick?.invoke(danhMuc)
+        }
     }
 
 }

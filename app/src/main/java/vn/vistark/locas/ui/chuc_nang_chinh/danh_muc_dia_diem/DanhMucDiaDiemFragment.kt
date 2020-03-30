@@ -3,6 +3,7 @@ package vn.vistark.locas.ui.chuc_nang_chinh.danh_muc_dia_diem
 
 import DanhMuc
 import DanhMucViTriResponse
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -25,8 +26,13 @@ import vn.vistark.locas.core.utils.CoordinatesDecoder.Companion.getAddressline
 import vn.vistark.locas.core.utils.LoadingDialog
 import vn.vistark.locas.core.utils.SimpfyLocationUtils
 import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.ui.dia_diem_quanh_day.ActivityManHinhDiaDiemQuanhDay
 
 class DanhMucDiaDiemFragment : Fragment() {
+    companion object {
+        var selectedDanhMuc: DanhMuc? = null
+    }
+
     lateinit var loading: LoadingDialog
 
     lateinit var mTvDiaDiemHienTai: TextView
@@ -122,6 +128,11 @@ class DanhMucDiaDiemFragment : Fragment() {
         dmRvDanhSachDanhMuc.layoutManager = GridLayoutManager(context, 2)
         danhMucAdapter = DanhMucAdapter(danhMucs)
         dmRvDanhSachDanhMuc.adapter = danhMucAdapter
+        danhMucAdapter.onClick = {
+            selectedDanhMuc = it
+            val intent = Intent(context, ActivityManHinhDiaDiemQuanhDay::class.java)
+            startActivity(intent)
+        }
 
     }
 
@@ -132,7 +143,7 @@ class DanhMucDiaDiemFragment : Fragment() {
 
     private fun getWelcomeString() {
         tvWelcome.text =
-            "Chào buổi tối ${Constants.getDisplayName()}, hãy chọn loại địa điểm bạn muốn"
+            "Chào ${Constants.getDisplayName()}, hãy chọn loại địa điểm bạn muốn"
     }
 
 

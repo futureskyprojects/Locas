@@ -16,6 +16,19 @@
         <item name="android:fontFamily">@font/st_heiti_sc_light_02</item>
     </style>
 
+    <style name="LocasTheme.NoActionBar.Status" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="buttonStyle">@style/RobotoButtonStyle</item>
+        <item name="android:statusBarColor">@color/defaultColor</item>
+        <item name="android:navigationBarColor">@color/defaultColor</item>
+        <item name="editTextStyle">@style/RobotoEditTextStyle</item>
+        <item name="android:fontFamily">@font/st_heiti_sc_light_02</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="LocasTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->

@@ -21,7 +21,6 @@ import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.utils.Crypto
 import vn.vistark.locas.core.utils.LoadingDialog
 import vn.vistark.locas.core.utils.SimpleNotify
-import vn.vistark.locas.ui.cap_nhat_ho_so.ManHinhCapNhatHoSo
 import vn.vistark.locas.ui.chuc_nang_chinh.ManHinhMenu
 import vn.vistark.locas.ui.dang_nhap.ManHinhDangNhap
 

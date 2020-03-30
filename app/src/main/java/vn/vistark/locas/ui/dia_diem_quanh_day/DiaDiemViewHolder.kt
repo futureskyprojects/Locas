@@ -1,6 +1,6 @@
-package vn.vistark.locas.ui.chuc_nang_chinh.dia_diem_yeu_thich
+package vn.vistark.locas.ui.dia_diem_quanh_day
 
-import FavoritePlaces
+import PlaceInRangeResult
 import android.location.Location
 import android.view.View
 import android.widget.ImageView
@@ -11,13 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.gson.GsonBuilder
 import vn.vistark.locas.R
-import vn.vistark.locas.core.request_model.coordinate.Coodinates
 import vn.vistark.locas.core.utils.SimpfyLocationUtils
-import java.lang.Exception
 
-class YeuThichViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+class DiaDiemViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     val lnItemPlaceRoot: LinearLayout = v.findViewById(R.id.lnItemPlaceRoot)
     val ivPlaceImage: ImageView = v.findViewById(R.id.ivPlaceImage)
     val tvPlaceName: TextView = v.findViewById(R.id.tvPlaceName)
@@ -25,20 +22,18 @@ class YeuThichViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     val rbRatingStar: RatingBar = v.findViewById(R.id.rbRatingStar)
     val tvRange: TextView = v.findViewById(R.id.tvRange)
 
-    fun bind(favoritePlaces: FavoritePlaces) {
-        tvPlaceName.text = favoritePlaces.ten_dd
+    fun bind(placeInRangeResult: PlaceInRangeResult) {
+        tvPlaceName.text = placeInRangeResult.ten_dd
         tvPlaceName.isSelected = true
-        Glide.with(ivPlaceImage.context).load(favoritePlaces.hinh_anh).into(ivPlaceImage)
+        Glide.with(ivPlaceImage.context).load(placeInRangeResult.hinh_anh).into(ivPlaceImage)
         // Tính khoảng cách
         try {
-//            val coordinates = GsonBuilder().create()
-//                .fromJson<Coodinates>(favoritePlaces.toa_do, Coodinates::class.java)
             val des = Location("")
-            des.latitude = favoritePlaces.toa_do.lat
-            des.longitude = favoritePlaces.toa_do.lng
+            des.latitude = placeInRangeResult.toa_do.lat
+            des.longitude = placeInRangeResult.toa_do.lng
 
-            tvRating.text = String.format("%.01f", favoritePlaces.rating)
-            rbRatingStar.rating = favoritePlaces.rating
+            tvRating.text = String.format("%.01f", placeInRangeResult.rating)
+            rbRatingStar.rating = placeInRangeResult.rating
 
             val distanceInMeters = SimpfyLocationUtils.mLastLocation!!.distanceTo(des)
             if (distanceInMeters < 1000) {
@@ -47,10 +42,11 @@ class YeuThichViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 tvRange.text = String.format("%.1fkm", distanceInMeters / 1000)
             }
             lnItemPlaceRoot.setOnClickListener {
-                if (DiaDiemYeuThichFragment.googleMap != null) {
-                    val latLng = LatLng(favoritePlaces.toa_do.lat, favoritePlaces.toa_do.lng)
+                if (ActivityManHinhDiaDiemQuanhDay.googleMap != null) {
+                    val latLng =
+                        LatLng(placeInRangeResult.toa_do.lat, placeInRangeResult.toa_do.lng)
                     val camUp = CameraUpdateFactory.newLatLngZoom(latLng, 18F)
-                    DiaDiemYeuThichFragment.googleMap!!.animateCamera(camUp)
+                    ActivityManHinhDiaDiemQuanhDay.googleMap!!.animateCamera(camUp)
                 }
             }
         } catch (e: Exception) {

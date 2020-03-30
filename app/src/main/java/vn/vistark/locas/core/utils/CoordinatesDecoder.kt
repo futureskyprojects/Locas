@@ -1,6 +1,10 @@
 package vn.vistark.locas.core.utils
 
+import AddressComponents
 import GeocodingResponse
+import InforCode
+import LocationToCodeResponse
+import Results
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
@@ -35,6 +39,7 @@ class CoordinatesDecoder {
                     if (response.isSuccessful) {
                         val geocodingResponse = response.body()
                         if (geocodingResponse != null && geocodingResponse.status.contains("OK") && geocodingResponse.results.isNotEmpty()) {
+                            locationToCode(geocodingResponse.results[2])
                             textView.text = geocodingResponse.results[4].formatted_address.replace(
                                 "Unnamed Road, ",
                                 ""
@@ -48,6 +53,28 @@ class CoordinatesDecoder {
                     textView.text = "Vị trí không xác định"
                 }
             })
+        }
+
+        fun locationToCode(results: Results) {
+            APIUtils.mAPIServices?.convertLocationToCode(results)
+                ?.enqueue(object : Callback<LocationToCodeResponse> {
+                    override fun onFailure(call: Call<LocationToCodeResponse>, t: Throwable) {
+
+                    }
+
+                    override fun onResponse(
+                        call: Call<LocationToCodeResponse>,
+                        response: Response<LocationToCodeResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val locationToCodeResponse = response.body()
+                            if (locationToCodeResponse != null && locationToCodeResponse.infor.isNotEmpty()) {
+                                InforCode.current = locationToCodeResponse.infor.first()
+                                Log.w("INFO_CODE", GsonBuilder().create().toJson(InforCode.current))
+                            }
+                        }
+                    }
+                })
         }
     }
 }
