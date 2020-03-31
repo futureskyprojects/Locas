@@ -9,6 +9,7 @@ import PlaceFromWardResponse
 import PlaceInRangeResponse
 import Results
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 import vn.vistark.locas.core.request_model.coordinate.CoodinateRequest
@@ -68,18 +69,44 @@ public interface APIServices {
     @POST("/api/places/getplacesinrange")
     fun placeInRange(@Body placeInRangeRequest: PlaceInRangeRequest): Call<PlaceInRangeResponse>
 
+    @POST("/api/users/updateprofile")
+    @FormUrlEncoded
+    fun updateProfile(
+        @Field("first_name") first_name: String,
+        @Field("last_name") last_name: String,
+        @Field("birth_day") birth_day: String,
+        @Field("phone") phone: String,
+        @Field("email") email: String
+    ): Call<CheckResponse>
+
+    @POST("/api/users/updateavatar")
+    @Multipart
+    fun uploadAvatar(
+        @Part avatar: MultipartBody.Part
+    ): Call<CheckResponse>
+
+
+    @POST("/api/users/insertratingfromuser")
+    @Multipart
+    fun addRating(
+        @Part("description") description: RequestBody,
+        @Part("rating") rating: Float,
+        @Part("place_id") place_id: Int,
+        @Part image1: MultipartBody.Part
+    ): Call<CheckResponse>
+
     @POST("/api/places/insertplacefromuser")
     @Multipart
     fun addNewPlace(
-        @Part("ten_dd") ten_dd: String,
-        @Part("mo_ta") mo_ta: String,
+        @Part("ten_dd") ten_dd: RequestBody,
+        @Part("mo_ta") mo_ta: RequestBody,
         @Part("toa_do") toa_do: Coodinates,
         @Part("gio_mo_cua") gio_mo_cua: String,
         @Part("gio_dong_cua") gio_dong_cua: String,
         @Part("ma_xap") ma_xap: Int,
         @Part("ma_dm") ma_dm: Int,
-        @Part("dia_chi") dia_chi: String,
-        @Part("luoc_su") luoc_su: String,
+        @Part("dia_chi") dia_chi: RequestBody,
+        @Part("luoc_su") luoc_su: RequestBody,
         @Part hinh_anh: MultipartBody.Part,
         @Part logo: MultipartBody.Part
     ): Call<CheckResponse>

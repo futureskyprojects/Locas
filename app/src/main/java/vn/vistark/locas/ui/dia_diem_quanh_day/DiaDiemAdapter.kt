@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import vn.vistark.locas.R
+import vn.vistark.locas.ui.danh_gia.DanhGiaDiaLog
 
 class DiaDiemAdapter(val arr: ArrayList<PlaceInRangeResult>) :
     RecyclerView.Adapter<DiaDiemViewHolder>() {
@@ -20,6 +21,9 @@ class DiaDiemAdapter(val arr: ArrayList<PlaceInRangeResult>) :
     override fun onBindViewHolder(holder: DiaDiemViewHolder, position: Int) {
         val plr = arr[position]
         holder.bind(plr)
+        holder.lnItemPlaceRoot.setOnClickListener {
+            DanhGiaDiaLog(holder.lnItemPlaceRoot.context, plr)
+        }
     }
 
 }

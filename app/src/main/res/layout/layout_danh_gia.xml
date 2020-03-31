@@ -97,13 +97,13 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginBottom="10dp"
-                                android:gravity="center|start"
+                                android:gravity="bottom|start"
                                 android:shadowColor="#FFF"
                                 android:shadowDx="2"
                                 android:shadowDy="3"
                                 android:text="Tên của địa điểm"
                                 android:textColor="@color/defaultColor"
-                                android:textSize="16dp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -152,7 +152,7 @@
             android:background="@drawable/citrus_peel"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -164,18 +164,24 @@
                     style="@style/Widget.AppCompat.RatingBar.Indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_centerVertical="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:isIndicator="false"
+                    android:numStars="5" />
 
                 <TextView
                     android:id="@+id/cmtRatingNumber"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_gravity="center"
+                    android:layout_toEndOf="@id/cmtRating"
                     android:gravity="center"
                     android:text="0.0"
                     android:textColor="@color/defaultColor"
                     android:textSize="@dimen/text_bigsize" />
-            </LinearLayout>
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"

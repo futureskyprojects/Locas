@@ -283,24 +283,24 @@
                     android:textStyle="italic" />
 
                 <Button
-                    android:id="@+id/btnCancel"
+                    android:id="@+id/btnCapNhatHoSo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/btn_error"
+                    android:background="@drawable/btn_ss"
                     android:padding="15dp"
-                    android:text="Hủy CẬP nhật"
+                    android:text="Cập nhật hồ sơ"
                     android:textAllCaps="true"
                     android:textColor="#FFF" />
 
                 <Button
-                    android:id="@+id/btnCapNhatHoSo"
+                    android:id="@+id/btnCancel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/btn_ss"
+                    android:background="@drawable/btn_error"
                     android:padding="15dp"
-                    android:text="Cập nhật hồ sơ"
+                    android:text="Hủy CẬP nhật"
                     android:textAllCaps="true"
                     android:textColor="#FFF" />
 

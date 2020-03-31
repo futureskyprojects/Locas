@@ -24,7 +24,7 @@ class YeuThichAdapter(val favoritePlaces: ArrayList<FavoritePlaces>) :
         val fp = favoritePlaces[position]
         holder.bind(fp)
         holder.lnItemPlaceRoot.setOnClickListener {
-            DanhGiaDiaLog(holder.lnItemPlaceRoot.context)
+            DanhGiaDiaLog(holder.lnItemPlaceRoot.context, fp)
         }
     }
 

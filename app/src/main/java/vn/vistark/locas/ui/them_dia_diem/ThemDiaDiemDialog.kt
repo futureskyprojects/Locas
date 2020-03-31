@@ -12,6 +12,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.FileUtils
 import android.provider.MediaStore
 import android.util.Log
@@ -215,6 +216,15 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
 
         initEvents()
 
+        setOnCancelListener {
+            imageUri = null
+            bm1 = null
+            logoUri = null
+            bm2 = null
+
+            current = null
+        }
+
         setCancelable(false)
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
@@ -291,16 +301,10 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                 SimpleNotify.error(context, "Chưa có giờ đóng cửa", "")
                 return@setOnClickListener
             }
-            val luocSuHinhThanh = edtLuocSuHinhThanh.text.toString()
             if (SimpfyLocationUtils.mLastLocation == null) {
                 SimpleNotify.error(context, "Không lấy được tọa độ", "")
                 return@setOnClickListener
             }
-
-            val coodinates = Coodinates(
-                SimpfyLocationUtils.mLastLocation!!.latitude,
-                SimpfyLocationUtils.mLastLocation!!.longitude
-            )
 
             if (InforCode.current == null) {
                 SimpleNotify.error(context, "Không xác định được địa phương hiện tại", "")
@@ -311,92 +315,122 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                 SimpleNotify.error(context, "Vui lòng chọn danh mục cho địa điểm", "")
                 return@setOnClickListener
             }
-
-            Log.w("PATH", imageUri!!.path!!)
-            Log.w("PATH", imageUri!!.path!!)
-
-            Log.w(
-                "PAASDSADASDSATH", MimeTypeMap.getSingleton()
-                    .getExtensionFromMimeType(context.contentResolver.getType(imageUri!!))
-            )
-            val imgFile = SaveFileUtils.saveImages(
-                context,
-                "img_place.${MimeTypeMap.getSingleton()
-                    .getExtensionFromMimeType(context.contentResolver.getType(imageUri!!)!!)}",
-                bm1!!
-            )
-            Log.w("PATH", imgFile!!.path)
-            val imgReqBody = RequestBody.create(
-                MediaType.parse("application/octet-stream"),
-                imgFile
-            )
-
-            val logoFile = SaveFileUtils.saveImages(
-                context,
-                "logo_place.${MimeTypeMap.getSingleton()
-                    .getExtensionFromMimeType(context.contentResolver.getType(logoUri!!)!!)}",
-                bm2!!
-            )
-            val logoReqBody = RequestBody.create(
-                MediaType.parse("application/octet-stream"),
-                logoFile!!
-            )
-            Log.w("PATH", logoFile.path)
             loadingDialog.show()
-            try {
-                APIUtils.mAPIServices?.addNewPlace(
-                    ten,
-                    "",
-                    coodinates,
-                    gioMoCua,
-                    gioDongCua,
-                    InforCode.current!!.ma_xap,
-                    selectedFp!!.ma_dm,
-                    diaChi,
-                    luocSuHinhThanh,
-                    MultipartBody.Part.createFormData("hinh_anh", imgFile.path, imgReqBody),
-                    MultipartBody.Part.createFormData("logo", logoFile.name, logoReqBody)
-                )?.enqueue(object : Callback<CheckResponse> {
-                    override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
-                        t.printStackTrace()
-                        SimpleNotify.networkError(context)
-                        loadingDialog.dismiss()
-                    }
+            SaveTempFile(context).execute()
+        }
+    }
 
-                    override fun onResponse(
-                        call: Call<CheckResponse>,
-                        response: Response<CheckResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            val checkResponse = response.body()
-                            if (checkResponse == null) {
-                                SimpleNotify.error(context, "Lỗi khi đọc phản hồi từ máy chủ", "")
-                            } else {
-                                if (checkResponse.code == 1) {
-                                    Toast.makeText(
-                                        context,
-                                        "Thêm địa điểm thành công",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    this@ThemDiaDiemDialog.dismiss()
-                                } else {
-                                    SimpleNotify.error(context, checkResponse.message, "LỖI")
-                                }
-                            }
-                        } else {
-                            Log.w("AAA", response.code().toString())
-                            Log.w("AAA", GsonBuilder().create().toJson(response.errorBody()))
-                            SimpleNotify.undefinedError(context)
-                        }
-                        loadingDialog.dismiss()
-                    }
-                })
-            } catch (e: Exception) {
-                e.printStackTrace()
-                SimpleNotify.error(context, "Lỗi khi thêm địa điểm", "")
-                loadingDialog.dismiss()
+    class SaveTempFile(val context: Context) : AsyncTask<Void, Int, ArrayList<File?>>() {
+        override fun doInBackground(vararg params: Void?): ArrayList<File?> {
+            val res = ArrayList<File?>()
+            res.add(
+                SaveFileUtils.saveImages(
+                    context,
+                    "img_place.${MimeTypeMap.getSingleton()
+                        .getExtensionFromMimeType(context.contentResolver.getType(imageUri!!)!!)}",
+                    bm1!!
+                )
+            )
+            res.add(
+                SaveFileUtils.saveImages(
+                    context,
+                    "logo_place.${MimeTypeMap.getSingleton()
+                        .getExtensionFromMimeType(context.contentResolver.getType(logoUri!!)!!)}",
+                    bm2!!
+                )
+            )
+            return res
+        }
+
+        override fun onPostExecute(result: ArrayList<File?>) {
+            if (result.size != 2) {
+                SimpleNotify.error(context, "Lỗi khi lưu tạm file", "")
+                current?.loadingDialog?.dismiss()
+            } else {
+                current?.add(result[0], result[1])
             }
+            super.onPostExecute(result)
 
+        }
+
+    }
+
+    fun add(imgFile: File?, logoFile: File?) {
+        if (imgFile == null || logoFile == null) {
+            SimpleNotify.error(context, "Có lỗi xảy ra, vui lòng thử lại", "")
+            return
+        }
+        val imgReqBody = RequestBody.create(
+            MediaType.parse(context.contentResolver.getType(imageUri!!)!!),
+            imgFile
+        )
+
+        val logoReqBody = RequestBody.create(
+            MediaType.parse(context.contentResolver.getType(logoUri!!)!!),
+            logoFile
+        )
+        try {
+            val ten = edtPlaceName.text.toString()
+            val diaChi = edtPlaceAddress.text.toString()
+            val gioMoCua = edtGioMoCua.text.toString()
+            val gioDongCua = edtGioDongCua.text.toString()
+            val luocSuHinhThanh = edtLuocSuHinhThanh.text.toString()
+            val coodinates = Coodinates(
+                SimpfyLocationUtils.mLastLocation!!.latitude,
+                SimpfyLocationUtils.mLastLocation!!.longitude
+            )
+
+            APIUtils.mAPIServices?.addNewPlace(
+                RequestBody.create(MediaType.parse("text/plain"), ten),
+                RequestBody.create(MediaType.parse("text/plain"), ""),
+                coodinates,
+                gioMoCua,
+                gioDongCua,
+                InforCode.current!!.ma_xap,
+                selectedFp!!.ma_dm,
+                RequestBody.create(MediaType.parse("text/plain"), diaChi),
+                RequestBody.create(MediaType.parse("text/plain"), luocSuHinhThanh),
+                MultipartBody.Part.createFormData("hinh_anh", imgFile.path, imgReqBody),
+                MultipartBody.Part.createFormData("logo", logoFile.name, logoReqBody)
+            )?.enqueue(object : Callback<CheckResponse> {
+                override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
+                    t.printStackTrace()
+                    SimpleNotify.networkError(context)
+                    loadingDialog.dismiss()
+                }
+
+                override fun onResponse(
+                    call: Call<CheckResponse>,
+                    response: Response<CheckResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val checkResponse = response.body()
+                        if (checkResponse == null) {
+                            SimpleNotify.error(context, "Lỗi khi đọc phản hồi từ máy chủ", "")
+                        } else {
+                            if (checkResponse.code == 1) {
+                                Toast.makeText(
+                                    context,
+                                    "Thêm địa điểm thành công",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                this@ThemDiaDiemDialog.dismiss()
+                            } else {
+                                SimpleNotify.error(context, checkResponse.message, "LỖI")
+                            }
+                        }
+                    } else {
+                        Log.w("AAA", response.code().toString())
+                        Log.w("AAA", GsonBuilder().create().toJson(response.errorBody()))
+                        SimpleNotify.undefinedError(context)
+                    }
+                    loadingDialog.dismiss()
+                }
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+            SimpleNotify.error(context, "Lỗi khi thêm địa điểm", "")
+            loadingDialog.dismiss()
         }
     }
 }
