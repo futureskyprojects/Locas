@@ -26,6 +26,7 @@ import vn.vistark.locas.core.utils.SimpleNotify
 import vn.vistark.locas.ui.dang_ky.ManHinhDangKy
 import vn.vistark.locas.ui.chuc_nang_chinh.ManHinhMenu
 import java.util.*
+import kotlin.math.log
 
 class ManHinhDangNhap : AppCompatActivity() {
     lateinit var loading: LoadingDialog
@@ -112,6 +113,13 @@ class ManHinhDangNhap : AppCompatActivity() {
 
                                     Constants.token = login.token
                                     Constants.avatar = login.avatar ?: ""
+
+                                    Constants.surname = login.first_name
+                                    Constants.name = login.last_name
+                                    Constants.phone = login.phone
+                                    Constants.email = login.email
+                                    Constants.birthDay = login.birth_day
+
                                     APIUtils.replaceAPIServices()
                                     goToMenuScreen()
                                     loading.dismiss()
