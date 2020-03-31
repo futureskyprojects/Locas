@@ -23,8 +23,9 @@ class YeuThichAdapter(val favoritePlaces: ArrayList<FavoritePlaces>) :
     override fun onBindViewHolder(holder: YeuThichViewHolder, position: Int) {
         val fp = favoritePlaces[position]
         holder.bind(fp)
-        holder.lnItemPlaceRoot.setOnClickListener {
+        holder.lnItemPlaceRoot.setOnLongClickListener {
             DanhGiaDiaLog(holder.lnItemPlaceRoot.context, fp)
+            return@setOnLongClickListener true
         }
     }
 

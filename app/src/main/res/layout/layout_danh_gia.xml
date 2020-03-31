@@ -118,7 +118,7 @@
                             <TextView
                                 android:id="@+id/tvRating"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="4dp"
                                 android:gravity="center"
@@ -132,14 +132,21 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/ivAddLoveBtn"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_margin="10dp"
+                            android:src="@drawable/ic_add_love"
+                            android:visibility="gone" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvUserComments"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </ScrollView>
@@ -201,7 +208,8 @@
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@id/ivBtnSend"
                     android:layout_toEndOf="@id/attImg1"
-                    android:hint="Đánh giá của bạn" />
+                    android:hint="Đánh giá của bạn"
+                    android:maxLength="255" />
 
                 <ImageView
                     android:id="@+id/ivBtnSend"

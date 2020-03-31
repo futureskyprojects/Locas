@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import vn.vistark.locas.ui.danh_gia.DanhGiaDiaLog
 import vn.vistark.locas.ui.sua_ho_so.SuaHoSoDialog
 import vn.vistark.locas.ui.them_dia_diem.ThemDiaDiemDialog
 
@@ -14,6 +15,7 @@ class TempActivityForSelectFile : AppCompatActivity() {
         val PLACE_IMAGE = "PLACE_IMAGE"
         val PLACE_LOGO = "PLACE_LOGO"
         val USER_AVATAR = "USER_AVATAR"
+        var RATING_ATTR_PIC_1 = "RATING_ATTR_PIC_1"
     }
 
     var key = PLACE_IMAGE
@@ -43,6 +45,8 @@ class TempActivityForSelectFile : AppCompatActivity() {
                 ThemDiaDiemDialog.logoUriUpdate(data.data)
             } else if (key == USER_AVATAR) {
                 SuaHoSoDialog.updateSelectedUri(data.data)
+            } else if (key == RATING_ATTR_PIC_1) {
+                DanhGiaDiaLog.updateSelectedUri(data.data)
             }
         }
         finish()

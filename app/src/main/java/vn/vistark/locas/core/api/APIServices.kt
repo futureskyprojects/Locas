@@ -8,6 +8,7 @@ import LocationToCodeResponse
 import PlaceFromWardResponse
 import PlaceInRangeResponse
 import Results
+import UserRatingResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -42,6 +43,14 @@ public interface APIServices {
     @POST("/api/users/signin")
     @FormUrlEncoded
     fun login(@Field("username") username: String, @Field("password") password: String): Call<LoginResponse>
+
+    @POST("/api/users/insertfavoriteplacefromuser")
+    @FormUrlEncoded
+    fun addFavorite(@Field("place_id") place_id: Int): Call<CheckResponse>
+
+    @POST("/api/places/getrating")
+    @FormUrlEncoded
+    fun getCommentRatings(@Field("place_id") place_id: Int):Call<UserRatingResponse>
 
     @POST("/api/users/updatelastcoordinate")
     fun updateLastCoodinates(@Body coordinate: CoodinateRequest): Call<CheckResponse>

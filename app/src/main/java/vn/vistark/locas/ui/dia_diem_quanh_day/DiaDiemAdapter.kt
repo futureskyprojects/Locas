@@ -21,8 +21,9 @@ class DiaDiemAdapter(val arr: ArrayList<PlaceInRangeResult>) :
     override fun onBindViewHolder(holder: DiaDiemViewHolder, position: Int) {
         val plr = arr[position]
         holder.bind(plr)
-        holder.lnItemPlaceRoot.setOnClickListener {
+        holder.lnItemPlaceRoot.setOnLongClickListener {
             DanhGiaDiaLog(holder.lnItemPlaceRoot.context, plr)
+            return@setOnLongClickListener true
         }
     }
 

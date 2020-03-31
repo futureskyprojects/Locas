@@ -15,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -34,6 +36,7 @@ import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.utils.LoadingDialog
 import vn.vistark.locas.core.utils.SaveFileUtils
 import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.ui.dang_nhap.ManHinhDangNhap
 import vn.vistark.locas.ui.trashing.TempActivityForSelectFile
 import java.io.File
 import java.util.*
@@ -157,13 +160,33 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
                         val checkResponse = response.body()
                         if (checkResponse != null && checkResponse.code == 1) {
                             if (selectedUri == null) {
-                                Toast.makeText(
-                                    context,
-                                    "Cập nhật hồ sơ thành công",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+//                                Toast.makeText(
+//                                    context,
+//                                    "Cập nhật hồ sơ thành công",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
                                 loadingDialog.dismiss()
                                 this@SuaHoSoDialog.dismiss()
+                                val act = context as AppCompatActivity
+                                if (act != null) {
+                                    SweetAlertDialog(context).apply {
+                                        titleText = "Khởi động lại ứng dụng?"
+                                        contentText = "CẬP NHẬT HỒ SƠ XONG"
+                                        setConfirmButton("Đồng ý") {
+                                            act.startActivity(
+                                                Intent(
+                                                    context,
+                                                    ManHinhDangNhap::class.java
+                                                )
+                                            )
+                                            it.dismissWithAnimation()
+                                            act.finish()
+                                        }
+                                        setCancelButton("Ở lại") {
+                                            it.dismissWithAnimation()
+                                        }
+                                    }
+                                }
                                 return
                             } else {
                                 saveTempFile(context).execute()
