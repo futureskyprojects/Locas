@@ -36,6 +36,7 @@ import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.utils.LoadingDialog
 import vn.vistark.locas.core.utils.SaveFileUtils
 import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.core.utils.TtsLibs
 import vn.vistark.locas.ui.trashing.TempActivityForSelectFile
 import java.io.File
 import java.lang.Exception
@@ -99,6 +100,18 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
         addRating(fp.ma_dd)
         ivAddLoveBtn.visibility = View.GONE
         loadComments(fp.ma_dd)
+        if (fp.count > 0) {
+            TtsLibs.defaultTalk(
+                context!!,
+                "${fp.ten_dd} được đánh giá trung bình là ${fp.rating} sao bởi ${fp.count} lượt đánh giá"
+            )
+        } else {
+            TtsLibs.defaultTalk(
+                context,
+                "${fp.ten_dd} dường như là một địa điểm mới, nên chưa có lượt đánh giá nào"
+            )
+        }
+
     }
 
     constructor(context: Context, pir: PlaceInRangeResult) : this(context) {
@@ -111,6 +124,17 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
         ivAddLoveBtn.visibility = View.VISIBLE
         addFavorite(pir.ma_dd)
         loadComments(pir.ma_dd)
+        if (pir.count > 0) {
+            TtsLibs.defaultTalk(
+                context!!,
+                "${pir.ten_dd} được đánh giá trung bình là ${pir.rating} sao bởi ${pir.count} lượt đánh giá"
+            )
+        } else {
+            TtsLibs.defaultTalk(
+                context,
+                "${pir.ten_dd} dường như là một địa điểm mới, nên chưa có lượt đánh giá nào"
+            )
+        }
     }
 
     private fun addFavorite(maDd: Int) {
@@ -119,6 +143,10 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
             APIUtils.mAPIServices?.addFavorite(maDd)?.enqueue(object : Callback<CheckResponse> {
                 override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
                     SimpleNotify.error(context, "Dường như bạn đã thêm rồi", "")
+                    TtsLibs.defaultTalk(
+                        context,
+                        "Dường như bạn đã thêm địa điểm này vào yêu thích trước đó rồi"
+                    )
                     loadingDiaLog.dismiss()
                 }
 
@@ -134,10 +162,15 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                                 "Đã thêm vào mục yêu thích. Bạn không thể lặp lại thao tác",
                                 ""
                             )
+                            TtsLibs.defaultTalk(
+                                context,
+                                "Đã thêm vào mục yêu thích. Bạn không thể lặp lại thao tác"
+                            )
                             loadingDiaLog.dismiss()
                             return
                         }
                     }
+                    TtsLibs.defaultTalk(context, "Dường như bạn đã thêm trước đó rồi")
                     SimpleNotify.error(context, "Dường như bạn đã thêm rồi", "")
                     loadingDiaLog.dismiss()
                     return
@@ -148,8 +181,8 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
 
     fun addRating(placeId: Int) {
         ivBtnSend.setOnClickListener {
-            val rating = cmtRatingNumber.text.toString()
-            if (rating.toFloat() < 1F) {
+            val rating = cmtRating.rating
+            if (cmtRating.rating < 1F) {
                 SimpleNotify.error(context, "Đánh giá nhỏ nhất là 1 sao", "")
                 return@setOnClickListener
             }
@@ -162,8 +195,8 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                 SimpleNotify.error(context, "Bạn phải có ảnh minh họa địa điểm", "")
                 return@setOnClickListener
             }
-
-            SaveTempFile(context, placeId, rating.toFloat(), cmt).execute()
+            ivBtnSend.isEnabled = false
+            SaveTempFile(context, placeId, rating, cmt).execute()
         }
     }
 
@@ -223,6 +256,7 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
     }
 
     private fun loadComments(placeId: Int) {
+        ivBtnSend.isEnabled = true
         cmtRating.rating = 0F
         cmtRatingNumber.text = "0.0"
         edtCommentContent.setText("")
@@ -312,6 +346,7 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                 )?.enqueue(object : Callback<CheckResponse> {
                     override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
                         SimpleNotify.error(context, "Lỗi khi đánh giá địa điểm", "")
+                        current?.ivBtnSend?.isEnabled = true
                         current?.loadingDiaLog?.dismiss()
                     }
 
@@ -335,6 +370,7 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
             } else {
                 SimpleNotify.error(context, "Lỗi khi đăng đánh giá", "")
                 current?.loadingDiaLog?.dismiss()
+                current?.ivBtnSend?.isEnabled = true
             }
         }
     }
