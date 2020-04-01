@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import vn.vistark.locas.R
+import vn.vistark.locas.core.utils.TtsLibs
 import vn.vistark.locas.ui.danh_gia.DanhGiaDiaLog
 
 class YeuThichAdapter(val favoritePlaces: ArrayList<FavoritePlaces>) :
@@ -25,6 +26,7 @@ class YeuThichAdapter(val favoritePlaces: ArrayList<FavoritePlaces>) :
         holder.bind(fp)
         holder.lnItemPlaceRoot.setOnLongClickListener {
             DanhGiaDiaLog(holder.lnItemPlaceRoot.context, fp)
+            TtsLibs.hienThiDanhGia(holder.lnItemPlaceRoot.context, fp.ten_dd)
             return@setOnLongClickListener true
         }
     }

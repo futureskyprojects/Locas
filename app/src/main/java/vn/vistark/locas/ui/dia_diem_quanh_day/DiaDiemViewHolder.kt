@@ -13,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import vn.vistark.locas.R
 import vn.vistark.locas.core.utils.SimpfyLocationUtils
+import vn.vistark.locas.core.utils.TtsLibs
 
 class DiaDiemViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     val lnItemPlaceRoot: LinearLayout = v.findViewById(R.id.lnItemPlaceRoot)
@@ -42,6 +43,11 @@ class DiaDiemViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 tvRange.text = String.format("%.1fkm", distanceInMeters / 1000)
             }
             lnItemPlaceRoot.setOnClickListener {
+                TtsLibs.nhanVaoDiaDiem(
+                    lnItemPlaceRoot.context,
+                    placeInRangeResult.ten_dd,
+                    tvRange.text.toString()
+                )
                 if (ActivityManHinhDiaDiemQuanhDay.googleMap != null) {
                     val latLng =
                         LatLng(placeInRangeResult.toa_do.lat, placeInRangeResult.toa_do.lng)

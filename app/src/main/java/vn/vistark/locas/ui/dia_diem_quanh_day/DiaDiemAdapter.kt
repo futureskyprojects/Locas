@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import vn.vistark.locas.R
+import vn.vistark.locas.core.utils.TtsLibs
 import vn.vistark.locas.ui.danh_gia.DanhGiaDiaLog
 
 class DiaDiemAdapter(val arr: ArrayList<PlaceInRangeResult>) :
@@ -23,6 +24,7 @@ class DiaDiemAdapter(val arr: ArrayList<PlaceInRangeResult>) :
         holder.bind(plr)
         holder.lnItemPlaceRoot.setOnLongClickListener {
             DanhGiaDiaLog(holder.lnItemPlaceRoot.context, plr)
+            TtsLibs.hienThiDanhGia(holder.lnItemPlaceRoot.context, plr.ten_dd)
             return@setOnLongClickListener true
         }
     }

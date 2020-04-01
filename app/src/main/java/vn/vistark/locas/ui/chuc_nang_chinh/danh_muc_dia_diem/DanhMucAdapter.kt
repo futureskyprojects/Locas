@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import vn.vistark.locas.R
+import vn.vistark.locas.core.utils.TtsLibs
 
 class DanhMucAdapter(val danhMucs: ArrayList<DanhMuc>) : RecyclerView.Adapter<DanhMucViewHolder>() {
 
@@ -24,6 +25,9 @@ class DanhMucAdapter(val danhMucs: ArrayList<DanhMuc>) : RecyclerView.Adapter<Da
         holder.bind(danhMuc)
         holder.idmRlRoot.setOnClickListener {
             onClick?.invoke(danhMuc)
+            if (danhMuc.ten_dm != null) {
+                TtsLibs.taiDanhMuc(holder.idmRlRoot.context, danhMuc.ten_dm)
+            }
         }
     }
 

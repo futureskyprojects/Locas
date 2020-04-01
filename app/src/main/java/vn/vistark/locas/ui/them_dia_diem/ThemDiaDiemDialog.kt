@@ -40,10 +40,7 @@ import vn.vistark.locas.R
 import vn.vistark.locas.core.api.APIUtils
 import vn.vistark.locas.core.request_model.coordinate.Coodinates
 import vn.vistark.locas.core.response_model.check.CheckResponse
-import vn.vistark.locas.core.utils.LoadingDialog
-import vn.vistark.locas.core.utils.SaveFileUtils
-import vn.vistark.locas.core.utils.SimpfyLocationUtils
-import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.core.utils.*
 import vn.vistark.locas.ui.chuc_nang_chinh.danh_muc_dia_diem.DanhMucAdapter
 import vn.vistark.locas.ui.trashing.TempActivityForSelectFile
 import java.io.File
@@ -145,6 +142,7 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
         adapter.onClick = {
             selectedFp = it
             tvLoaiDanhMuc.text = "Địa điểm thuộc: ${selectedFp!!.ten_dm}"
+            TtsLibs.defaultTalk(context, "Địa điểm thuộc: ${selectedFp!!.ten_dm}")
         }
         rvPlaceCategories.setHasFixedSize(true)
         rvPlaceCategories.layoutManager =
@@ -180,6 +178,7 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                                     "Không có danh mục",
                                     ""
                                 )
+                                TtsLibs.defaultTalk(context, "Bạn chưa chọn danh mục")
                             }
                         } else {
                             SimpleNotify.error(
@@ -187,6 +186,7 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                                 "Không lấy được danh mục vị trí",
                                 ""
                             )
+                            TtsLibs.defaultTalk(context, "Không lấy được danh mục vị trí")
                         }
                     } else {
                         SimpleNotify.undefinedError(
@@ -274,44 +274,52 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
         }
         btnThemDiaDiem.setOnClickListener {
             if (imageUri == null) {
+                TtsLibs.defaultTalk(context, "Bạn chưa chọn ảnh địa điểm")
                 SimpleNotify.error(context, "Chưa chọn ảnh cho địa điểm", "")
                 return@setOnClickListener
             }
             if (logoUri == null) {
+                TtsLibs.defaultTalk(context, "Bạn chưa chọn logo cho địa điểm")
                 SimpleNotify.error(context, "Chưa chọn logo cho địa điểm", "")
                 return@setOnClickListener
             }
             val ten = edtPlaceName.text.toString()
             if (ten.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Bạn chưa nhập tên địa điểm")
                 SimpleNotify.error(context, "Chưa nhập tên địa điểm", "")
                 return@setOnClickListener
             }
             val diaChi = edtPlaceAddress.text.toString()
             if (diaChi.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Bạn chưa nhập số nhà hoặc tên đường")
                 SimpleNotify.error(context, "Chưa nhập số nhà/tên đường", "")
                 return@setOnClickListener
             }
             val gioMoCua = edtGioMoCua.text.toString()
             if (gioMoCua.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Vui lòng chọn giờ mở cửa")
                 SimpleNotify.error(context, "Chưa có giờ mở cửa", "")
                 return@setOnClickListener
             }
             val gioDongCua = edtGioDongCua.text.toString()
             if (gioDongCua.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Vui lòng chọn giờ đóng cửa")
                 SimpleNotify.error(context, "Chưa có giờ đóng cửa", "")
                 return@setOnClickListener
             }
             if (SimpfyLocationUtils.mLastLocation == null) {
+                TtsLibs.defaultTalk(context, "Tôi không thể biết tọa độ hiện tại của bạn")
                 SimpleNotify.error(context, "Không lấy được tọa độ", "")
                 return@setOnClickListener
             }
 
-            if (InforCode.current == null) {
-                SimpleNotify.error(context, "Không xác định được địa phương hiện tại", "")
-                return@setOnClickListener
-            }
+//            if (InforCode.current == null) {
+//                SimpleNotify.error(context, "Không xác định được địa phương hiện tại", "")
+//                return@setOnClickListener
+//            }
 
             if (selectedFp == null) {
+                TtsLibs.defaultTalk(context, "Vui lòng cho biết địa điểm thuộc mục nào")
                 SimpleNotify.error(context, "Vui lòng chọn danh mục cho địa điểm", "")
                 return@setOnClickListener
             }
@@ -386,7 +394,7 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                 coodinates,
                 gioMoCua,
                 gioDongCua,
-                InforCode.current!!.ma_xap,
+                InforCode.current?.ma_xap ?: -1,
                 selectedFp!!.ma_dm,
                 RequestBody.create(MediaType.parse("text/plain"), diaChi),
                 RequestBody.create(MediaType.parse("text/plain"), luocSuHinhThanh),
@@ -406,9 +414,11 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
                     if (response.isSuccessful) {
                         val checkResponse = response.body()
                         if (checkResponse == null) {
+                            TtsLibs.defaultTalk(context!!, "Lỗi khi đọc phản hồi từ máy chủ")
                             SimpleNotify.error(context, "Lỗi khi đọc phản hồi từ máy chủ", "")
                         } else {
                             if (checkResponse.code == 1) {
+                                TtsLibs.defaultTalk(context!!, "Thêm địa điểm thành công")
                                 Toast.makeText(
                                     context,
                                     "Thêm địa điểm thành công",
@@ -429,6 +439,7 @@ class ThemDiaDiemDialog(context: Context) : AlertDialog(context) {
             })
         } catch (e: Exception) {
             e.printStackTrace()
+            TtsLibs.defaultTalk(context!!, "Lỗi khi thêm địa điểm")
             SimpleNotify.error(context, "Lỗi khi thêm địa điểm", "")
             loadingDialog.dismiss()
         }

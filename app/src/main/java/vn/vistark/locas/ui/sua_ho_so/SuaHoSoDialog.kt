@@ -36,6 +36,7 @@ import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.utils.LoadingDialog
 import vn.vistark.locas.core.utils.SaveFileUtils
 import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.core.utils.TtsLibs
 import vn.vistark.locas.ui.dang_nhap.ManHinhDangNhap
 import vn.vistark.locas.ui.trashing.TempActivityForSelectFile
 import java.io.File
@@ -122,26 +123,32 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
             val ngaySinh = edtNgaySinh.text.toString()
 
             if (ho.isEmpty()) {
-                SimpleNotify.error(context, "Họ và tên đệm trốn", "")
+                SimpleNotify.error(context, "Họ và tên đệm trống", "")
+                TtsLibs.defaultTalk(context, "Họ và tên đệm trống")
                 return@setOnClickListener
             }
             if (ten.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Tên không thể để trống")
                 SimpleNotify.error(context, "Tên không thể trống", "")
                 return@setOnClickListener
             }
             if (email.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Thiếu địa chỉ email")
                 SimpleNotify.error(context, "Thiếu địa chỉ email", "")
                 return@setOnClickListener
             }
             if (!email.contains("@")) {
+                TtsLibs.defaultTalk(context, "Địa chỉ email không hợp lệ")
                 SimpleNotify.error(context, "Địa chỉ email không hợp lệ", "")
                 return@setOnClickListener
             }
             if (sdt.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Số điện thoại trống")
                 SimpleNotify.error(context, "Số điện thoại trống", "")
                 return@setOnClickListener
             }
             if (ngaySinh.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Chưa chọn ngày sinh")
                 SimpleNotify.error(context, "Chưa chọn ngày sinh", "")
                 return@setOnClickListener
             }
@@ -150,6 +157,7 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
                 Callback<CheckResponse> {
                 override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
                     SimpleNotify.networkError(context)
+                    TtsLibs.defaultTalk(context, "Lỗi mạng")
                 }
 
                 override fun onResponse(
@@ -165,6 +173,7 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
 //                                    "Cập nhật hồ sơ thành công",
 //                                    Toast.LENGTH_SHORT
 //                                ).show()
+                                TtsLibs.defaultTalk(context, "Cập nhật hồ sơ thành công")
                                 loadingDialog.dismiss()
                                 this@SuaHoSoDialog.dismiss()
                                 val act = context as AppCompatActivity
@@ -196,6 +205,7 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
                     }
 
 
+                    TtsLibs.defaultTalk(context, "Cập nhật hồ sơ thất bại")
                     SimpleNotify.error(context, "Cập nhật hồ sơ thất bại", "")
                     loadingDialog.dismiss()
                     return
@@ -255,6 +265,7 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
 
     fun uploadAvatar(f: File?) {
         if (f == null) {
+            TtsLibs.defaultTalk(context, "Có lỗi xảy ra, vui lòng thử lại")
             SimpleNotify.error(context, "Có lỗi xảy ra, vui lòng thử lại", "")
             return
         }
@@ -268,6 +279,7 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
         )?.enqueue(object : Callback<CheckResponse> {
             override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
                 SimpleNotify.error(context, "Lỗi khi cập nhật avatar", "")
+                TtsLibs.defaultTalk(context, "Lỗi khi cập nhật ảnh đại diện")
                 loadingDialog.dismiss()
             }
 
@@ -280,12 +292,35 @@ class SuaHoSoDialog(context: Context) : AlertDialog(context), DatePickerDialog.O
                             "Cập nhật hồ sơ thành công",
                             Toast.LENGTH_SHORT
                         ).show()
+                        TtsLibs.defaultTalk(context, "Cập nhật hồ sơ thành công")
                         loadingDialog.dismiss()
                         this@SuaHoSoDialog.dismiss()
+
+                        val act = context as AppCompatActivity
+                        if (act != null) {
+                            SweetAlertDialog(context).apply {
+                                titleText = "Khởi động lại ứng dụng?"
+                                contentText = "CẬP NHẬT HỒ SƠ XONG"
+                                setConfirmButton("Đồng ý") {
+                                    act.startActivity(
+                                        Intent(
+                                            context,
+                                            ManHinhDangNhap::class.java
+                                        )
+                                    )
+                                    it.dismissWithAnimation()
+                                    act.finish()
+                                }
+                                setCancelButton("Ở lại") {
+                                    it.dismissWithAnimation()
+                                }
+                            }
+                        }
                         return
                     }
                 }
 
+                TtsLibs.defaultTalk(context, "Cập nhật ảnh đại diện thất bại")
                 SimpleNotify.error(context, "Cập avatar thất bại", "")
                 loadingDialog.dismiss()
                 return

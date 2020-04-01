@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder
 import vn.vistark.locas.R
 import vn.vistark.locas.core.request_model.coordinate.Coodinates
 import vn.vistark.locas.core.utils.SimpfyLocationUtils
+import vn.vistark.locas.core.utils.TtsLibs
 import java.lang.Exception
 
 class YeuThichViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -47,6 +48,11 @@ class YeuThichViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 tvRange.text = String.format("%.1fkm", distanceInMeters / 1000)
             }
             lnItemPlaceRoot.setOnClickListener {
+                TtsLibs.nhanVaoDiaDiem(
+                    lnItemPlaceRoot.context,
+                    favoritePlaces.ten_dd,
+                    tvRange.text.toString()
+                )
                 if (DiaDiemYeuThichFragment.googleMap != null) {
                     val latLng = LatLng(favoritePlaces.toa_do.lat, favoritePlaces.toa_do.lng)
                     val camUp = CameraUpdateFactory.newLatLngZoom(latLng, 18F)

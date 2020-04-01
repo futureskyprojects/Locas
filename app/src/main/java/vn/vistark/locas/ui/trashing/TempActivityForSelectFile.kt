@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import vn.vistark.locas.core.utils.TtsLibs
 import vn.vistark.locas.ui.danh_gia.DanhGiaDiaLog
 import vn.vistark.locas.ui.sua_ho_so.SuaHoSoDialog
 import vn.vistark.locas.ui.them_dia_diem.ThemDiaDiemDialog
@@ -27,6 +28,10 @@ class TempActivityForSelectFile : AppCompatActivity() {
     }
 
     fun pickImage() { // Gọi intent của hệ thống để chọn ảnh nhé.
+        TtsLibs.defaultTalk(
+            this,
+            arrayListOf("Hãy chọn ảnh thật đẹp nhé", "Hãy chọn tấm ảnh mà bạn ưng ý nhất").random()
+        )
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT

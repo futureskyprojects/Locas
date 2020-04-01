@@ -16,6 +16,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 import vn.vistark.locas.R
 import vn.vistark.locas.core.Constants
+import vn.vistark.locas.core.utils.TtsLibs
 import vn.vistark.locas.ui.dang_nhap.ManHinhDangNhap
 import vn.vistark.locas.ui.sua_ho_so.SuaHoSoDialog
 import vn.vistark.locas.ui.them_dia_diem.ThemDiaDiemDialog
@@ -61,10 +62,12 @@ class ManHinhThietLapFragment : Fragment() {
         }
         rlBtnSuaHoSo.setOnClickListener {
             val suaHoSoDialog = SuaHoSoDialog(context!!)
+            TtsLibs.defaultTalk(context!!, "Đang hiển thị mục sửa hồ sơ")
             suaHoSoDialog.show()
         }
 
         rlBtnThemDiaDiem.setOnClickListener {
+            TtsLibs.defaultTalk(context!!, "Đang hiển thị mục thêm địa điểm")
             val themDiaDiemDialog = ThemDiaDiemDialog(context!!)
             themDiaDiemDialog.show()
         }

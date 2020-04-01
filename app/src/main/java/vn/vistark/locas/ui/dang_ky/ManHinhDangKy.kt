@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.login_field.*
 import kotlinx.android.synthetic.main.login_field.btnDangKy
 import kotlinx.android.synthetic.main.login_field.btnDangNhap
@@ -21,6 +22,7 @@ import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.utils.Crypto
 import vn.vistark.locas.core.utils.LoadingDialog
 import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.core.utils.TtsLibs
 import vn.vistark.locas.ui.chuc_nang_chinh.ManHinhMenu
 import vn.vistark.locas.ui.dang_nhap.ManHinhDangNhap
 
@@ -66,16 +68,21 @@ class ManHinhDangKy : AppCompatActivity() {
 
         if (tenTk.isEmpty() || sdt.isEmpty() || mk.isEmpty() || nhapLaiMk.isEmpty()) {
             SimpleNotify.warning(this, "Thiếu thông tin", "")
+            TtsLibs.defaultTalk(this@ManHinhDangKy, "Thiếu thông tin")
         } else {
             if (mk != nhapLaiMk) {
                 SimpleNotify.warning(this, "Mật khẩu nhập lại không đúng", "")
+                TtsLibs.defaultTalk(this@ManHinhDangKy, "Mật khẩu nhập lại không đúng")
             } else {
                 if (tenTk.length < 5) {
                     SimpleNotify.warning(this, "Tài khoản quá ngắn", "")
+                    TtsLibs.defaultTalk(this@ManHinhDangKy, "Tài khoản quá ngắn")
                 } else if (sdt.length != 10) {
                     SimpleNotify.warning(this, "Số điện thoại phải đủ 10 chữ số", "")
+                    TtsLibs.defaultTalk(this@ManHinhDangKy, "Số điện thoại phải đủ 10 số")
                 } else if (mk.length < 8) {
                     SimpleNotify.warning(this, "Mật khẩu tối thiểu 8 ký tự", "")
+                    TtsLibs.defaultTalk(this@ManHinhDangKy, "Mật khẩu tối thiểu 8 ký tự")
                 } else {
                     loadingDialog.show()
                     checkUsername()
@@ -105,12 +112,14 @@ class ManHinhDangKy : AppCompatActivity() {
                                 return
                             } else if (checkResponse.code == 1) {
                                 SimpleNotify.error(this@ManHinhDangKy, "Tài khoản đã tồn tại", "")
+                                TtsLibs.defaultTalk(this@ManHinhDangKy, "Tài khoản đã tồn tại")
                                 loadingDialog.dismiss()
                                 return
                             }
                         }
                     }
                     SimpleNotify.error(this@ManHinhDangKy, "Kiểm tra tên tài khoản lỗi", "")
+                    TtsLibs.defaultTalk(this@ManHinhDangKy, "Kiểm tra tài khoản lỗi")
                     loadingDialog.dismiss()
                 }
             })
@@ -137,12 +146,14 @@ class ManHinhDangKy : AppCompatActivity() {
                                 return
                             } else if (checkResponse.code == 1) {
                                 SimpleNotify.error(this@ManHinhDangKy, "SĐT đã tồn tại", "")
+                                TtsLibs.defaultTalk(this@ManHinhDangKy, "Số điện thoại đã tồn tại")
                                 loadingDialog.dismiss()
                                 return
                             }
                         }
                     }
                     SimpleNotify.error(this@ManHinhDangKy, "Kiểm tra SĐT lỗi", "")
+                    TtsLibs.defaultTalk(this@ManHinhDangKy, "Kiểm tra số điện thoại lỗi")
                     loadingDialog.dismiss()
                 }
             })
@@ -169,17 +180,33 @@ class ManHinhDangKy : AppCompatActivity() {
                     ) {
                         if (response.isSuccessful) {
                             val check = response.body()
-                            if (check != null && check.code == 1) {
-                                requestEditProfile(tenTk, mk)
-                                return
+                            if (check != null) {
+                                if (check.code == 1) {
+                                    requestEditProfile(tenTk, mk)
+                                    return
+                                } else if (check.code == 0) {
+                                    SimpleNotify.error(
+                                        this@ManHinhDangKy,
+                                        check.message,
+                                        ""
+                                    )
+                                    TtsLibs.defaultTalk(this@ManHinhDangKy, check.message)
+                                    loadingDialog.dismiss()
+                                    return
+                                }
                             }
                         }
                         SimpleNotify.error(this@ManHinhDangKy, "Đăng ký không thành công", "")
+                        TtsLibs.defaultTalk(
+                            this@ManHinhDangKy,
+                            "Đăng ký tài khoản không thành công"
+                        )
                         loadingDialog.dismiss()
                     }
                 })
         } else {
             SimpleNotify.error(this, "Lỗi phân giải mật khẩu", "")
+            TtsLibs.defaultTalk(this@ManHinhDangKy, "Lỗi phân giải mật khẩu")
             loadingDialog.dismiss()
         }
     }
@@ -188,6 +215,7 @@ class ManHinhDangKy : AppCompatActivity() {
         SweetAlertDialog(this).run {
             titleText = "Đăng ký thành công"
             contentText = "Chúc mừng bạn"
+            TtsLibs.defaultTalk(this@ManHinhDangKy, "Đăng ký thành công")
             setCancelable(false)
             setConfirmButton("Đăng nhâp") {
                 Constants.username = tenTk

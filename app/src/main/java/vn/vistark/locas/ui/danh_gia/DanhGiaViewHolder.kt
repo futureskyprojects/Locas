@@ -30,6 +30,7 @@ class DanhGiaViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         tvNoiDungDanhGia.text = userRatings.description
         rbRatingStar.rating = userRatings.rating
         tvRating.text = String.format("%.01f", userRatings.rating)
+        tvThoiDiemDanhGia.isSelected = true
     }
 
     fun getDisplayName(userRatings: UserRatings): String {

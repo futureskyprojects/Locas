@@ -37,8 +37,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ivLogoHinhAnh"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:src="@drawable/not_found_img" />
@@ -60,6 +60,7 @@
                         android:shadowColor="#FFF"
                         android:shadowDx="2"
                         android:shadowDy="3"
+                        android:shadowRadius="3"
                         android:text="Họ tên người đánh giá"
                         android:textColor="@color/defaultColor"
                         android:textSize="18sp"
@@ -71,13 +72,16 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
-                        android:background="@drawable/btn_text_link"
-                        android:lines="1"
-                        android:shadowColor="#FFF"
+                        android:background="@drawable/btn_text_link_more_opac"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:shadowColor="#000"
                         android:shadowDx="2"
                         android:shadowDy="3"
+                        android:shadowRadius="3"
+                        android:singleLine="true"
                         android:text="14:00 12/12/2020"
-                        android:textColor="@color/ssColor"
+                        android:textColor="#E6E6E6"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 

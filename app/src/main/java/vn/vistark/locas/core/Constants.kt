@@ -3,6 +3,7 @@ package vn.vistark.locas.core
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
+import vn.vistark.locas.core.utils.TtsUtils
 
 class Constants {
     companion object {
@@ -165,6 +166,5 @@ class Constants {
         fun initialize(app: AppCompatActivity) {
             sharedPreferences = app.getSharedPreferences("Locas", Context.MODE_PRIVATE)
         }
-
     }
 }

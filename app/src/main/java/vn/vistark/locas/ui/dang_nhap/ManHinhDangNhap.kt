@@ -19,16 +19,14 @@ import vn.vistark.locas.R
 import vn.vistark.locas.core.Constants
 import vn.vistark.locas.core.api.APIUtils
 import vn.vistark.locas.core.response_model.login.LoginResponse
-import vn.vistark.locas.core.utils.Crypto
-import vn.vistark.locas.core.utils.LoadingDialog
-import vn.vistark.locas.core.utils.SimpfyLocationUtils
-import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.core.utils.*
 import vn.vistark.locas.ui.dang_ky.ManHinhDangKy
 import vn.vistark.locas.ui.chuc_nang_chinh.ManHinhMenu
 import java.util.*
 import kotlin.math.log
 
 class ManHinhDangNhap : AppCompatActivity() {
+
     lateinit var loading: LoadingDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,10 +62,20 @@ class ManHinhDangNhap : AppCompatActivity() {
                 if (SimpfyLocationUtils.mLastLocation != null) {
                     if (Constants.token.isNotEmpty()) {
                         runOnUiThread {
+                            TtsLibs.defaultTalk(
+                                this@ManHinhDangNhap,
+                                "Đang tự động đăng nhập. Vui lòng đợi"
+                            )
                             btnDangNhap.performClick()
                         }
                     } else {
                         loading.dismiss()
+                        runOnUiThread {
+                            TtsLibs.defaultTalk(
+                                this@ManHinhDangNhap,
+                                "Chào mừng bạn đến với Locas, Hãy đăng nhập để tiếp tục sử dụng hệ thống"
+                            )
+                        }
                     }
                     this.cancel()
                 }
@@ -85,9 +93,11 @@ class ManHinhDangNhap : AppCompatActivity() {
             val password = edtPassword.text.toString()
             if (username.length < 5) {
                 SimpleNotify.error(this, "Tài khoản không hợp lệ", "")
+                TtsLibs.defaultTalk(this@ManHinhDangNhap, "Tài khoản không hợp lệ")
                 return@setOnClickListener
             } else if (password.length < 8) {
                 SimpleNotify.error(this, "Mật khẩu không hợp lệ", "")
+                TtsLibs.defaultTalk(this@ManHinhDangNhap, "Mật khẩu không hợp lệ")
                 return@setOnClickListener
             }
 
@@ -99,6 +109,7 @@ class ManHinhDangNhap : AppCompatActivity() {
                         override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                             SimpleNotify.networkError(this@ManHinhDangNhap)
                             loading.dismiss()
+                            t.printStackTrace()
                         }
 
                         override fun onResponse(
@@ -108,6 +119,10 @@ class ManHinhDangNhap : AppCompatActivity() {
                             if (response.isSuccessful) {
                                 val login = response.body()
                                 if (login != null && login.code == 1) {
+                                    TtsLibs.defaultTalk(
+                                        this@ManHinhDangNhap,
+                                        "Đăng nhập thành công"
+                                    )
                                     Constants.username = edtUsername.text.toString()
                                     Constants.password = edtPassword.text.toString()
 
@@ -132,6 +147,7 @@ class ManHinhDangNhap : AppCompatActivity() {
                     })
             } else {
                 SimpleNotify.error(this, "Lỗi phân giải mật khẩu", "")
+                TtsLibs.defaultTalk(this@ManHinhDangNhap, "Lỗi phân giải mật khẩu")
                 loading.dismiss()
             }
         }
@@ -163,6 +179,10 @@ class ManHinhDangNhap : AppCompatActivity() {
                 Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            TtsLibs.defaultTalk(
+                this@ManHinhDangNhap,
+                "Vui lòng cung cấp các quyền mà ứng dụng yêu cầu"
+            )
 
             ActivityCompat.requestPermissions(
                 this,

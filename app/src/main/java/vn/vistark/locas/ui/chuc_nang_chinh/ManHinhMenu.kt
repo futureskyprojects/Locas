@@ -19,13 +19,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import vn.vistark.locas.R
+import vn.vistark.locas.core.Constants
 import vn.vistark.locas.core.api.APIUtils
 import vn.vistark.locas.core.request_model.coordinate.CoodinateRequest
 import vn.vistark.locas.core.request_model.coordinate.Coodinates
 import vn.vistark.locas.core.response_model.check.CheckResponse
-import vn.vistark.locas.core.utils.CoordinatesDecoder
-import vn.vistark.locas.core.utils.SimpfyLocationUtils
-import vn.vistark.locas.core.utils.SimpleNotify
+import vn.vistark.locas.core.utils.*
 import vn.vistark.locas.ui.chuc_nang_chinh.danh_muc_dia_diem.DanhMucDiaDiemFragment
 import vn.vistark.locas.ui.chuc_nang_chinh.dia_diem_yeu_thich.DiaDiemYeuThichFragment
 import vn.vistark.locas.ui.chuc_nang_chinh.thiet_lap.ManHinhThietLapFragment
@@ -49,6 +48,8 @@ class ManHinhMenu : AppCompatActivity() {
         navigationOptions()
 
         initLocationManager()
+
+        TtsLibs.chaoMung(this)
     }
 
     @SuppressLint("MissingPermission")
@@ -79,10 +80,15 @@ class ManHinhMenu : AppCompatActivity() {
                         return@setOnNavigationItemSelectedListener true
                     }
                     R.id.navigation_dia_diem_yeu_thich -> {
+                        TtsLibs.defaultTalk(
+                            this,
+                            "Đang hiển thị danh sách các địa điểm yêu thích của bạn"
+                        )
                         loadFragment(DiaDiemYeuThichFragment())
                         return@setOnNavigationItemSelectedListener true
                     }
                     R.id.navigation_thiet_lap -> {
+                        TtsLibs.defaultTalk(this, "Hãy chọn thiết lập mà bạn mong muốn")
                         loadFragment(ManHinhThietLapFragment())
                         return@setOnNavigationItemSelectedListener true
                     }

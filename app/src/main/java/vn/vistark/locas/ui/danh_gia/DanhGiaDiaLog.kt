@@ -31,6 +31,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import vn.vistark.locas.R
+import vn.vistark.locas.core.Constants
 import vn.vistark.locas.core.api.APIUtils
 import vn.vistark.locas.core.response_model.check.CheckResponse
 import vn.vistark.locas.core.utils.LoadingDialog
@@ -183,15 +184,18 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
         ivBtnSend.setOnClickListener {
             val rating = cmtRating.rating
             if (cmtRating.rating < 1F) {
+                TtsLibs.defaultTalk(context, "Đánh giá nhỏ nhất là 1 sao")
                 SimpleNotify.error(context, "Đánh giá nhỏ nhất là 1 sao", "")
                 return@setOnClickListener
             }
             val cmt = edtCommentContent.text.toString()
             if (cmt.isEmpty()) {
+                TtsLibs.defaultTalk(context, "Bạn chưa nhập nội dung đánh giá")
                 SimpleNotify.error(context, "Bạn chưa nhập nội dung đánh giá", "")
                 return@setOnClickListener
             }
             if (selectedUri == null) {
+                TtsLibs.defaultTalk(context, "Phải phải có ảnh minh họa để đảm bảo khách quan")
                 SimpleNotify.error(context, "Bạn phải có ảnh minh họa địa điểm", "")
                 return@setOnClickListener
             }
@@ -284,6 +288,10 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                                     "Hãy là người đầu tiên đánh giá địa điểm này",
                                     ""
                                 )
+                                TtsLibs.defaultTalk(
+                                    context,
+                                    "Hãy đến và trở thành người đầu tiên đánh giá địa điểm này ${if (Constants.name.isNotEmpty()) "nhé ${Constants.name}" else ""}"
+                                )
                                 loadingDiaLog.dismiss()
                                 return
                             } else {
@@ -296,6 +304,7 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                             }
                         }
                     }
+                    TtsLibs.defaultTalk(context, "Không lấy được danh sách đánh giá")
                     SimpleNotify.error(context, "Không lấy được đánh giá của địa điểm này", "")
                     loadingDiaLog.dismiss()
                 }
@@ -346,6 +355,7 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                 )?.enqueue(object : Callback<CheckResponse> {
                     override fun onFailure(call: Call<CheckResponse>, t: Throwable) {
                         SimpleNotify.error(context, "Lỗi khi đánh giá địa điểm", "")
+                        TtsLibs.defaultTalk(context, "Có lỗi khi thực hiện đánh giá địa điểm")
                         current?.ivBtnSend?.isEnabled = true
                         current?.loadingDiaLog?.dismiss()
                     }
@@ -357,17 +367,20 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                         if (response.isSuccessful) {
                             val check = response.body()
                             if (check != null && check.code == 1) {
+                                TtsLibs.defaultTalk(context, "Đánh giá địa điểm thành công")
                                 SimpleNotify.success(context, "Đánh giá thành công", "")
                                 current?.loadComments(placeId)
                                 return
                             }
                         }
 
+                        TtsLibs.defaultTalk(context, "Lỗi không xác định")
                         SimpleNotify.error(context, "Lỗi không xác định khi đánh giá", "")
                         return
                     }
                 })
             } else {
+                TtsLibs.defaultTalk(context, "Lỗi khi đăng đánh giá")
                 SimpleNotify.error(context, "Lỗi khi đăng đánh giá", "")
                 current?.loadingDiaLog?.dismiss()
                 current?.ivBtnSend?.isEnabled = true
