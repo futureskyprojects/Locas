@@ -199,6 +199,7 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                 SimpleNotify.error(context, "Bạn phải có ảnh minh họa địa điểm", "")
                 return@setOnClickListener
             }
+            loadingDiaLog.show()
             ivBtnSend.isEnabled = false
             SaveTempFile(context, placeId, rating, cmt).execute()
         }
@@ -373,7 +374,7 @@ class DanhGiaDiaLog(context: Context) : AlertDialog(context) {
                                 return
                             }
                         }
-
+                        current?.loadingDiaLog?.dismiss()
                         TtsLibs.defaultTalk(context, "Lỗi không xác định")
                         SimpleNotify.error(context, "Lỗi không xác định khi đánh giá", "")
                         return

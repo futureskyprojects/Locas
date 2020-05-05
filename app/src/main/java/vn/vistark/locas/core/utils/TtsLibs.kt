@@ -24,7 +24,8 @@ class TtsLibs {
                 "Các $tenDanhMuc đang được hiển thị",
                 "Đây là các $tenDanhMuc cho bạn lựa chọn"
             )
-            TtsUtils(context).execute(s.random())
+            if (Constants.isUseAssistant)
+                TtsUtils(context).execute(s.random())
         }
 
         fun nhanVaoDiaDiem(context: Context, tenDiaDiem: String, khoangCach: String) {
