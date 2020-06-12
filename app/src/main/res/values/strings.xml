@@ -4,8 +4,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-
-    <string name="google_maps_key">AIzaSyDksc5_jxcH_rWobg-K3bI863_SB2q4wWI</string>
+    <string name="google_maps_key">AIzaSyAACibb_FslyHg-4akZmfMXcS9QN9H8G9c</string>
+<!--    <string name="google_maps_key">AIzaSyDksc5_jxcH_rWobg-K3bI863_SB2q4wWI</string>-->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
